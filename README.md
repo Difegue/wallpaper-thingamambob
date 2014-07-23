@@ -3,6 +3,7 @@ wallpaper-thingamambob
 
 Wallpaper slideshow utility for multi-monitor setups on Windows.  
 The Visual Studio solution is hella messy so you should probably not use it.  
+Depends on CImg: http://cimg.sourceforge.net  
 
 Enter paths to your images in Folders.txt.  
 Timer.txt structure:
