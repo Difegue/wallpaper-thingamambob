@@ -1,5 +1,19 @@
 #include "ImageFetching.h"
 
+char* string2CA(std::string& s) //Converts std::string to array of char.
+{
+	char *a=new char[s.size()+1];
+	a[s.size()]=0;
+	memcpy(a,s.c_str(),s.size());
+	return a;
+}
+
+bool compFloat (float A, float B, float EPSILON) 
+{
+   float diff = A - B;
+   return (diff < EPSILON) && (-diff < EPSILON);
+}
+
 std::wstring s2ws(const std::string& s)
 {
 	int len;
@@ -24,34 +38,41 @@ std::string ws2s(const std::wstring& s)
 	return r;
 }
 
-vector<wstring> FetchDirectories(string& text){
+std::vector<std::string> FetchDirectories(std::string text){ 
 
+	std::cout << "Beginning fetching..." << std::endl;
 	//Fetching images
-	vector<wstring> filenames; //vector of all filenames
-	string directoryPath;
+	std::vector<std::string> filenames; //vector of all filenames
+	std::string directoryPath; 
 
 	//Opening text file containing folders
 	std::ifstream infile(text);
 
 	while (getline(infile, directoryPath)) //Store each line into directoryPath and operate on it
 	{
-		WIN32_FIND_DATA FindFileData;
+		WIN32_FIND_DATA FindFileData; 
 		HANDLE hFind = INVALID_HANDLE_VALUE;
 
-		hFind = FindFirstFile(s2ws(directoryPath).c_str(), &FindFileData);
+		hFind = FindFirstFile(s2ws(directoryPath+"\*").c_str(), &FindFileData);
 
-		if (hFind != INVALID_HANDLE_VALUE)
+		if(hFind  != INVALID_HANDLE_VALUE)
 		{
 			do
 			{
-				if (FindFileData.dwFileAttributes != FILE_ATTRIBUTE_DIRECTORY)
-					filenames.push_back(FindFileData.cFileName);
-			} while (FindNextFile(hFind, &FindFileData));
+				//if(FindFileData.dwFileAttributes != FILE_ATTRIBUTE_DIRECTORY)
+				//{
+					if (ws2s(FindFileData.cFileName)!="." && ws2s(FindFileData.cFileName)!=".." && ws2s(FindFileData.cFileName)!="Thumbs.db") //awful workaround
+					{
+						filenames.push_back(directoryPath+ws2s(FindFileData.cFileName));
+						std::cout << "Adding " << ws2s(FindFileData.cFileName) << std::endl;
+					}
+				//}
+			} while(FindNextFile(hFind, &FindFileData));
 
 			FindClose(hFind);
 		}
-
-		return filenames;
+	
+		
 	}
-
-}
+return filenames;
+};
