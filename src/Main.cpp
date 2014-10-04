@@ -6,11 +6,11 @@
 #include <stdio.h>
 #include <conio.h> 
 #include <time.h> 
+#include <direct.h>
 #include "ImageFetching.h"
 #define cimg_use_png
 #define cimg_use_jpeg
 #include "CImg.h"
-#include "Wallpaper.h"
 
 using namespace cimg_library;
 
@@ -297,16 +297,32 @@ GetMonitorInfo(,*monitor);
 			FinalWP.draw_image(widthstep,(maxheight-wps[i].height()),wps[i]);
 			widthstep=widthstep+wps[i].width();
 		}
+
+		//bullshit windows things to get a temp folder
+		TCHAR temp_file[265];
+		GetTempPath(255, temp_file);
+		lstrcat(temp_file, L"wp.bmp");
+
+		std::wstring pathf = temp_file;
+		std::cout << "Saving to "+ws2s(pathf)+"\n";
+
 		//save it as .bmp for easy use by winAPI.
-		FinalWP.save("wp.bmp");
+		FinalWP.save(ws2s(temp_file).c_str());
+
 		//call winAPI, set as wallpaper!
 
-		LPWSTR test = L"wp.bmp";
-		bool result;
-		//old
-		//result = SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, test, SPIF_UPDATEINIFILE);
-		result = SetDesktopWallpaper(test, Tile);
-		if (SUCCEEDED(result)) std::cout << "Wallpaper set\n"; else std::cout << "Error! Wallpaper not set\n";
+		//Gotta check for Windows version.
+		//All the way to W7:
+		//bool result = SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, const_cast<LPWSTR>(pathf.c_str()), SPIF_UPDATEINIFILE);
+
+		//W8 and up:
+
+		HRESULT hr = CoInitialize(nullptr);
+		IDesktopWallpaper *pDesktopWallpaper = nullptr;
+		hr = CoCreateInstance(__uuidof(DesktopWallpaper), nullptr, CLSCTX_ALL, IID_PPV_ARGS(&pDesktopWallpaper));
+		hr = pDesktopWallpaper->SetWallpaper(nullptr, const_cast<LPWSTR>(pathf.c_str()));
+
+		if (!FAILED(hr)) std::cout << "Wallpaper set\n"; else std::cout << "Error! Wallpaper not set\n";
 
 		
 		//sleep, and redo.

@@ -90,12 +90,10 @@
     <ClInclude Include="ImageFetching.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="Wallpaper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ImageFetching.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Wallpaper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Wallpaper thingamambob.rc" />
