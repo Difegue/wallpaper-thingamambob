@@ -311,19 +311,18 @@ GetMonitorInfo(,*monitor);
 
 		//call winAPI, set as wallpaper!
 
-		//Gotta check for Windows version.
-		//All the way to W7:
-		//bool result = SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, const_cast<LPWSTR>(pathf.c_str()), SPIF_UPDATEINIFILE);
+		bool result = SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, const_cast<LPWSTR>(pathf.c_str()), SPIF_UPDATEINIFILE);
 
-		//W8 and up:
+		//for W8 and up:
 
-		HRESULT hr = CoInitialize(nullptr);
+		/*HRESULT hr = CoInitialize(nullptr);
 		IDesktopWallpaper *pDesktopWallpaper = nullptr;
 		hr = CoCreateInstance(__uuidof(DesktopWallpaper), nullptr, CLSCTX_ALL, IID_PPV_ARGS(&pDesktopWallpaper));
 		hr = pDesktopWallpaper->SetWallpaper(nullptr, const_cast<LPWSTR>(pathf.c_str()));
 
-		if (!FAILED(hr)) std::cout << "Wallpaper set\n"; else std::cout << "Error! Wallpaper not set\n";
+		if (!FAILED(hr)) std::cout << "Wallpaper set\n"; else std::cout << "Error! Wallpaper not set\n";*/
 
+		if (result) std::cout << "Wallpaper set\n"; else std::cout << "Error! Wallpaper not set\n";
 		
 		//sleep, and redo.
 		std::cout << "Next Wallpaper change in " << taimu << " seconds.\n";
